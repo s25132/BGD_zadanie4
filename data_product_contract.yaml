@@ -1,0 +1,114 @@
+kind: DataContract
+apiVersion: v3.1.0
+
+domain: finance
+dataProduct: transaction_report
+version: 1.0.0
+status: active
+
+id: 8f9c6f92-transaction-report
+
+description:
+  purpose: Reporting-ready transaction dataset for analytics and monitoring.
+  usage: Business reporting, transaction analysis, dashboarding, and visualization.
+  limitations: Data depends on source transaction files and manual pipeline execution.
+
+servers:
+  - server: postgres-local
+    type: postgres
+    host: localhost
+    port: 5432
+    database: transactions_db
+    schema: gold
+
+schema:
+  - name: v_transaction_report
+    physicalName: v_transaction_report
+    physicalType: view
+    businessName: Transaction Reporting View
+    description: Final Gold analytical reporting view.
+
+    properties:
+      - name: transaction_id
+        logicalType: string
+        physicalType: varchar
+        required: true
+        description: Unique transaction identifier.
+
+      - name: year
+        logicalType: integer
+        physicalType: integer
+        required: true
+        description: Transaction year.
+
+      - name: month
+        logicalType: integer
+        physicalType: integer
+        required: true
+        description: Transaction month.
+
+      - name: customer_name
+        logicalType: string
+        physicalType: varchar
+        required: false
+        description: Customer full name.
+
+      - name: city
+        logicalType: string
+        physicalType: varchar
+        required: false
+        description: Merchant city.
+
+      - name: country
+        logicalType: string
+        physicalType: varchar
+        required: false
+        description: Merchant country.
+
+      - name: amount
+        logicalType: number
+        physicalType: numeric
+        required: true
+        description: Transaction amount.
+
+      - name: payment_method
+        logicalType: string
+        physicalType: varchar
+        required: false
+        description: Payment method used in transaction.
+
+      - name: status
+        logicalType: string
+        physicalType: varchar
+        required: false
+        description: Transaction status.
+
+    quality:
+      - metric: completeness_transaction_id
+        dimension: completeness
+        description: Percentage of non-null transaction_id values.
+        mustBe: 100
+
+      - metric: uniqueness_transaction_id
+        dimension: uniqueness
+        description: Percentage of unique transaction_id values.
+        mustBe: 100
+
+      - metric: validity_amount
+        dimension: validity
+        description: Percentage of rows with amount > 0.
+        mustBeGreaterThan: 99
+
+team:
+  name: pjatk-big-data-project
+  members:
+    - username: [Your Name]
+      role: Owner
+
+tags:
+  - transactions
+  - reporting
+  - analytics
+
+contractCreatedTs: "2026-05-10T12:00:00+00:00"
+```
